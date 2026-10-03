@@ -4,6 +4,9 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+  schedule:
+    # 10:00 WIB, 4–22 October. GitHub may queue scheduled runs.
+    - cron: "0 3 4-22 10 *"
 
 permissions:
   contents: read
@@ -15,7 +18,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  publication-window:
+    runs-on: ubuntu-latest
+    outputs:
+      allowed: ${{ steps.window.outputs.allowed }}
+    steps:
+      - id: window
+        env:
+          TRIGGER: ${{ github.event_name }}
+        run: |
+          if [ "$TRIGGER" != "schedule" ] || [ "$(date -u +%Y)" = "2026" ]; then
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+          fi
   build:
+    needs: publication-window
+    if: needs.publication-window.outputs.allowed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

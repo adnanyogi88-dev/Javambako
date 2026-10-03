@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
+import { isPublished } from '../publication.js';
 import { getCollection } from 'astro:content';
 import { getArticleImage } from '../articleImages';
 
-const posts = (await getCollection('blog', ({ data }) => data.status === 'published'))
+const posts = (await getCollection('blog', isPublished))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 12);
 

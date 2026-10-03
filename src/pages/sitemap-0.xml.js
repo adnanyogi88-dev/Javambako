@@ -1,3 +1,4 @@
+import { isPublished } from '../publication.js';
 import { getCollection } from 'astro:content';
 
 export const prerender = true;
@@ -15,7 +16,7 @@ const categorySlug = (value) => value.toLocaleLowerCase('id-ID')
 
 export async function GET({ site }) {
   const origin = site || new URL('https://javatobacco.com');
-  const posts = await getCollection('blog', ({ data }) => data.status === 'published');
+  const posts = await getCollection('blog', isPublished);
   posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
   const categories = [...new Set(posts.flatMap((post) => post.data.categories || []))];
   const entries = [

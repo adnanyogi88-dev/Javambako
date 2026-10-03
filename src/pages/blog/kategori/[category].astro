@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import { isPublished } from '../../../publication.js';
 import { getCollection } from 'astro:content';
 
 const categorySlug = (value) => value.toLocaleLowerCase('id-ID')
@@ -10,7 +11,7 @@ export async function getStaticPaths() {
   const toSlug = (value) => value.toLocaleLowerCase('id-ID')
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-  const posts = await getCollection('blog', ({ data }) => data.status === 'published');
+  const posts = await getCollection('blog', isPublished);
   const categories = [...new Set(posts.flatMap((post) => post.data.categories || []))];
   return categories.map((category) => ({
     params: { category: toSlug(category) },

@@ -1,10 +1,11 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { isPublished } from '../../publication.js';
 import { getCollection, render } from 'astro:content';
 import { getArticleImage } from '../../articleImages';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => data.status === 'published');
+  const posts = await getCollection('blog', isPublished);
   return posts.map((post) => ({
     params: { slug: post.data.slug || post.slug },
     props: { post },
@@ -16,7 +17,7 @@ const { Content } = await render(post);
 const pillarSlug = 'jual-tembakau-grosir-indonesia-untuk-mitra-usaha';
 const currentSlug = post.data.slug || post.slug;
 const commercialTopic = /\b(grosir|supplier|pemasok|distributor|reseller|pengadaan|pasokan|partai besar|mitra usaha)\b/i;
-const shouldLinkToGrosirPillar = currentSlug !== pillarSlug
+const shouldLinkToGrosirPillar = !post.data.educational && currentSlug !== pillarSlug
   && !post.body.includes(pillarSlug)
   && commercialTopic.test(`${post.data.title} ${(post.data.tags || []).join(' ')}`);
 const desc = post.data.description || post.body.replace(/[#*_>`\[\]()]/g, '').slice(0, 155);
@@ -24,8 +25,8 @@ const image = getArticleImage(post);
 const site = Astro.site || new URL('https://javatobacco.com');
 const postUrl = new URL(`/blog/${post.data.slug || post.slug}/`, site).href;
 const blogUrl = new URL('/blog/', site).href;
-const allPosts = (await getCollection('blog', ({ data }) => data.status === 'published'))
-  .filter((item) => item.id !== post.id);
+const allPosts = (await getCollection('blog', isPublished))
+  .filter((item) => item.id !== post.id && (!post.data.educational || item.data.educational));
 const categories = post.data.categories?.length ? post.data.categories : ['Tembakau'];
 const stopWords = new Set(['tembakau', 'tobacco', 'java', 'javatobacco', 'panduan', 'lengkap', 'bisnis', 'peluang', 'indonesia', 'untuk', 'dari', 'dan', 'yang', 'dengan', 'cara', 'produk']);
 const terms = (value) => new Set(String(value || '').toLocaleLowerCase('id-ID')
@@ -81,7 +82,7 @@ const breadcrumbSchema = {
       {categories.length > 0 && <p class="eyebrow">{categories.map((category, index) => <><a href={`/blog/kategori/${categorySlug(category)}/`}>{category}</a>{index < categories.length - 1 && ' • '}</>)}</p>}
       <h1>{post.data.title}</h1>
       <time>{post.data.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
-      <img class="featured" src={image} alt={post.data.title} loading="eager" />
+      <img class="featured" src={image} alt={post.data.imageAlt || post.data.title} loading="eager" />
     </header>
     <div class="article-content">
       <Content />
