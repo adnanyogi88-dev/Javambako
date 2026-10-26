@@ -1,6 +1,7 @@
 ---
 title: "Cek Fakta Informasi Tembakau: Lima Pertanyaan sebelum Mempercayai Klaim"
 description: "Cek Fakta Informasi Tembakau: Lima Pertanyaan sebelum Mempercayai Klaim. Penjelasan edukatif dan rujukan yang dapat diperiksa."
+updated: "2026-10-26T15:30:00+07:00"
 date: "2026-10-22T10:00:00+07:00"
 scheduledAt: "2026-10-22T10:00:00+07:00"
 slug: "cek-fakta-informasi-tembakau"
@@ -40,7 +41,11 @@ Pelajari juga [etika konten tembakau di internet dan media sosial](/blog/etika-k
 
 ## Rujukan
 
-- [Kew — Plants of the World Online, Nicotiana tabacum](https://powo.science.kew.org/taxon/urn%3Alsid%3Aipni.org%3Anames%3A817077-1), diakses 2 Oktober 2026. Rujukan mendukung fakta yang disebut; kerangka membaca dan saran dokumentasi merupakan penjelasan editorial.
+- [ICMJE — Disclosure of Financial and Non-Financial Relationships and Activities, and Conflicts of Interest](https://www.icmje.org/recommendations/browse/roles-and-responsibilities/author-responsibilities--conflicts-of-interest.html). Mendukung penjelasan tentang transparansi pendanaan dan hubungan kepentingan.
+- [NCCIH — How To Make Sense of a Scientific Journal Article: Results](https://www.nccih.nih.gov/health/know-science/how-to-make-sense-of-a-scientific-journal-article/results). Panduan memeriksa hasil, analisis, dan perbandingan dengan penelitian lain.
+- [CDC — Analyzing and Interpreting Data](https://www.cdc.gov/field-epi-manual/php/chapters/analyze-interpret-data.html). Menjelaskan interpretasi hubungan statistik serta pertimbangan bias dan perancu sebelum menyimpulkan sebab-akibat.
+
+Rujukan diperiksa pada 26 Oktober 2026. Susunan pertanyaan dan saran dokumentasi merupakan penjelasan editorial Redaksi Java Tobacco; artikel ini bukan penilaian klinis atau rekomendasi kesehatan.
 
 ---
 

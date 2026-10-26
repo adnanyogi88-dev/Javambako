@@ -1,0 +1,33 @@
+name: Technical site checks
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          SITE_URL: https://javatobacco.com
+          BASE_PATH: /
+      - run: node --test tests/technical-audit.test.mjs
+      - name: Install browser test tooling
+        run: npm install --no-save --package-lock=false playwright@1.62.1
+      - run: node scripts/browser-smoke.mjs
+        env:
+          BROWSER_CHANNEL: chrome
+      - name: Upload browser screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-screenshots
+          path: browser-results/

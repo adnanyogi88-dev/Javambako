@@ -1,0 +1,17 @@
+---
+import BlogArchive from '../../../components/BlogArchive.astro';
+import { getCollection } from 'astro:content';
+import { isPublished } from '../../../publication';
+import { PAGE_SIZE, sortPosts } from '../../../blogPagination';
+export async function getStaticPaths() {
+  const posts = sortPosts(await getCollection('blog', isPublished));
+  const totalPages = Math.ceil(posts.length / PAGE_SIZE);
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => {
+    const currentPage = i + 2;
+    return { params: { page: String(currentPage) }, props: {
+      posts: posts.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE), currentPage, totalPages,
+    } };
+  });
+}
+---
+<BlogArchive {...Astro.props} />

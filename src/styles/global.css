@@ -513,9 +513,17 @@ time {
   height: auto;
 }
 
-.article-content p:has(> img:only-child) {
-  display: none;
-}
+/* Reserve the cover slot before the image arrives, without cropping its content. */
+.featured-frame { aspect-ratio: 16 / 9; margin: 22px 0; background: var(--soft); }
+.featured-frame .featured { display: block; width: 100%; height: 100%; max-height: none; margin: 0; object-fit: contain; }
+.skip-link { position: fixed; top: 8px; left: 8px; transform: translateY(-200%); z-index: 100; padding: 12px 18px; background: #fff; color: var(--ink); }
+.skip-link:focus { transform: none; outline: 3px solid var(--brand); }
+#main-content { scroll-margin-top: 180px; }
+.pagination { justify-content: center; margin: 28px 0; gap: 8px; }
+.pagination a, .pagination span { min-width: 44px; min-height: 44px; padding: 8px 12px; text-align: center; }
+.pagination [aria-current] { background: var(--brand-dark); color: white; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
 
 .article a {
   color: var(--brand);
