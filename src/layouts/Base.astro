@@ -124,6 +124,7 @@ const whatsappUrl = 'https://wa.me/6287776329910?text=Hi%20Java%20Mbako%20saya%2
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Lewati ke konten</a>
     <header class="site-header">
       <div class="container nav">
         <a class="brand" href={base} aria-label="Java Mbako beranda">
@@ -139,7 +140,7 @@ const whatsappUrl = 'https://wa.me/6287776329910?text=Hi%20Java%20Mbako%20saya%2
         </nav>
       </div>
     </header>
-    <main class="container">
+    <main id="main-content" class="container" tabindex="-1">
       <slot />
     </main>
     <footer class="site-footer">

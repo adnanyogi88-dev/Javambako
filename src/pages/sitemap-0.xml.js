@@ -1,3 +1,4 @@
+import { PAGE_SIZE, blogPagePath } from '../blogPagination.js';
 import { isPublished } from '../publication.js';
 import { getCollection } from 'astro:content';
 
@@ -23,6 +24,7 @@ export async function GET({ site }) {
     { path: '/', lastmod: null },
     { path: '/blog/', lastmod: posts[0]?.data.updated || posts[0]?.data.date },
     { path: '/daftar-mitra/', lastmod: null },
+    ...Array.from({ length: Math.max(0, Math.ceil(posts.length / PAGE_SIZE) - 1) }, (_, i) => ({ path: blogPagePath(i + 2), lastmod: null })),
     ...categories.map((category) => ({ path: `/blog/kategori/${categorySlug(category)}/`, lastmod: null })),
     ...posts.map((post) => ({
       path: `/blog/${post.data.slug || post.slug}/`,

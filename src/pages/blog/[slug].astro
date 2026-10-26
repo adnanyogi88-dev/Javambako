@@ -60,7 +60,7 @@ const articleSchema = {
   dateModified: (post.data.updated || post.data.date).toISOString(),
   inLanguage: post.data.lang,
   mainEntityOfPage: postUrl,
-  author: { '@type': 'Person', name: post.data.author || 'Java Mbako' },
+  author: { '@type': /redaksi|admin|java/i.test(post.data.author || 'Java Mbako') ? 'Organization' : 'Person', name: post.data.author || 'Java Mbako' },
   publisher: { '@type': 'Organization', name: 'Java Mbako', url: site.href },
 };
 const breadcrumbSchema = {
@@ -81,8 +81,9 @@ const breadcrumbSchema = {
     <header class="article-header">
       {categories.length > 0 && <p class="eyebrow">{categories.map((category, index) => <><a href={`/blog/kategori/${categorySlug(category)}/`}>{category}</a>{index < categories.length - 1 && ' • '}</>)}</p>}
       <h1>{post.data.title}</h1>
-      <time>{post.data.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
-      <img class="featured" src={image} alt={post.data.imageAlt || post.data.title} loading="eager" />
+      <p class="article-byline">Oleh {post.data.author || 'Java Mbako'}</p>
+      <time datetime={post.data.date.toISOString()}>{post.data.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
+      <div class="featured-frame"><img class="featured" src={image} alt={post.data.imageAlt || post.data.title} loading="eager" /></div>
     </header>
     <div class="article-content">
       <Content />
