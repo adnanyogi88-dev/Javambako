@@ -18,7 +18,7 @@ await new Promise(r => server.listen(4321, '127.0.0.1', r));
 await mkdir('browser-results', { recursive: true });
 let browser;
 try {
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, channel: process.env.BROWSER_CHANNEL || undefined });
   for (const width of [360, 390, 1280]) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     // Check first-party rendering independently of external analytics availability.
