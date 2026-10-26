@@ -27,13 +27,17 @@ try {
     page.on('pageerror', error => errors.push(error.message));
     for (const [label, path] of [['archive','/blog/'],['page-2','/blog/page/2/'],['article','/blog/cek-fakta-informasi-tembakau/']]) {
       await page.goto(`http://127.0.0.1:4321${path}`, { waitUntil: 'networkidle' });
+      await page.evaluate(() => Promise.all([...document.images].map(async (image) => {
+        image.loading = 'eager';
+        try { await image.decode(); } catch { /* Report failed decoding below. */ }
+      })));
       const state = await page.evaluate(() => ({
         overflow: document.documentElement.scrollWidth > innerWidth,
-        missingImages: [...document.images].filter(i => i.loading !== 'lazy' && (!i.complete || i.naturalWidth === 0)).map(i => i.src),
+        missingImages: [...document.images].filter(i => !i.complete || i.naturalWidth === 0).map(i => i.src),
         coverHeight: document.querySelector('.featured-frame')?.getBoundingClientRect().height,
       }));
       assert.equal(state.overflow, false, `${width} ${path}: horizontal overflow`);
-      assert.deepEqual(state.missingImages, [], `${width} ${path}: broken eager image`);
+      assert.deepEqual(state.missingImages, [], `${width} ${path}: broken image`);
       await page.keyboard.press('Tab');
       assert.equal(await page.evaluate(() => document.activeElement.className), 'skip-link');
       await page.keyboard.press('Enter');
@@ -47,7 +51,7 @@ try {
         await page.reload({ waitUntil: 'networkidle' });
       }
       await page.screenshot({ path: `browser-results/${label}-${width}.png`, fullPage: true });
-      console.log(`PASS ${width}px ${path}: no overflow, cover/eager assets available, skip-link focus works`);
+      console.log(`PASS ${width}px ${path}: no overflow, all image assets decoded, skip-link focus works`);
     }
     assert.deepEqual(errors, []);
     await page.close();
