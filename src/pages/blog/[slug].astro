@@ -16,6 +16,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 const pillarSlug = 'jual-tembakau-grosir-indonesia-untuk-mitra-usaha';
 const currentSlug = post.data.slug || post.slug;
+const canonicalUrl = new URL(`/blog/${currentSlug}/`, site).href;
 const commercialTopic = /\b(grosir|supplier|pemasok|distributor|reseller|pengadaan|pasokan|partai besar|mitra usaha)\b/i;
 const shouldLinkToGrosirPillar = !post.data.educational && currentSlug !== pillarSlug
   && !post.body.includes(pillarSlug)
@@ -73,7 +74,7 @@ const breadcrumbSchema = {
   ],
 };
 ---
-<Base title={`${post.data.title} | Java Mbako`} description={desc} image={image} lang={post.data.lang} structuredData={[articleSchema, breadcrumbSchema]}>
+<Base title={`${post.data.title} | Java Mbako`} description={desc} image={image} lang={post.data.lang} canonical={canonicalUrl} structuredData={[articleSchema, breadcrumbSchema]}>
   <article class="article">
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">Beranda</a><span aria-hidden="true">/</span><a href="/blog/">Blog</a><span aria-hidden="true">/</span><span aria-current="page">{post.data.title}</span>
