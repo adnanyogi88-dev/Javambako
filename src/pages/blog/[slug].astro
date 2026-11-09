@@ -16,6 +16,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 const pillarSlug = 'jual-tembakau-grosir-indonesia-untuk-mitra-usaha';
 const currentSlug = post.data.slug || post.slug;
+const site = Astro.site || new URL('https://javatobacco.com');
 const canonicalUrl = new URL(`/blog/${currentSlug}/`, site).href;
 const commercialTopic = /\b(grosir|supplier|pemasok|distributor|reseller|pengadaan|pasokan|partai besar|mitra usaha)\b/i;
 const shouldLinkToGrosirPillar = !post.data.educational && currentSlug !== pillarSlug
@@ -23,7 +24,6 @@ const shouldLinkToGrosirPillar = !post.data.educational && currentSlug !== pilla
   && commercialTopic.test(`${post.data.title} ${(post.data.tags || []).join(' ')}`);
 const desc = post.data.description || post.body.replace(/[#*_>`\[\]()]/g, '').slice(0, 155);
 const image = getArticleImage(post);
-const site = Astro.site || new URL('https://javatobacco.com');
 const postUrl = new URL(`/blog/${post.data.slug || post.slug}/`, site).href;
 const blogUrl = new URL('/blog/', site).href;
 const allPosts = (await getCollection('blog', isPublished))

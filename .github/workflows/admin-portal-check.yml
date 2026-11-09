@@ -1,0 +1,40 @@
+name: Admin Portal Build Check
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/pages/admin/**'
+      - 'src/layouts/**'
+      - 'src/content/**'
+      - 'src/content.config.ts'
+      - 'src/publication.js'
+      - 'supabase/**'
+      - 'astro.config.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/admin-portal-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Astro site
+        run: npm run build
+        env:
+          SITE_URL: https://javatobacco.com
+          BASE_PATH: /
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
