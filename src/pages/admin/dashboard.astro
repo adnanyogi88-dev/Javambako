@@ -20,7 +20,7 @@ const recent = [...allPosts].sort((a,b) => b.data.date.valueOf()-a.data.date.val
   </section>
 </Base>
 <script>
-  import { createClient } from '@supabase/supabase-js';
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
   const url=import.meta.env.PUBLIC_SUPABASE_URL; const key=import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const status=document.querySelector('#auth-status'); const content=document.querySelector('#dashboard-content'); const logout=document.querySelector('#logout');
   if(!url||!key) status.textContent='Konfigurasi Supabase belum dipasang pada environment deployment.';
