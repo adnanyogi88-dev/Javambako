@@ -8,7 +8,7 @@ import Base from '../../layouts/Base.astro';
   </div></section>
 </Base>
 <script>
-  import { createClient } from '@supabase/supabase-js';
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
   const url = import.meta.env.PUBLIC_SUPABASE_URL;
   const key = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const form = document.querySelector('#login-form');
