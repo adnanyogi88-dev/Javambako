@@ -2,10 +2,24 @@
 import Base from '../../layouts/Base.astro';
 ---
 <Base title="Admin Login | Java Mbako" description="Login administrator Java Mbako." index={false}>
-  <section class="admin-wrap"><div class="admin-card">
-    <p class="eyebrow">Area terbatas</p><h1>Admin Java Mbako</h1><p>Masuk untuk mengakses panel administrasi website.</p>
-    <form id="login-form"><label for="email">Email administrator</label><input id="email" name="email" type="email" autocomplete="username" required /><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required /><button type="submit">Masuk</button><p id="login-status" role="status" aria-live="polite"></p></form>
-  </div></section>
+  <section class="login-shell">
+    <div class="login-brand"><div class="brand-mark">JM</div><div><strong>Java Mbako</strong><small>ADMIN CONSOLE</small></div></div>
+    <div class="login-card">
+      <div class="lock-icon">⌑</div>
+      <p class="eyebrow">SECURE SIGN IN</p>
+      <h1>Selamat datang</h1>
+      <p class="intro">Masuk menggunakan akun administrator yang telah terdaftar.</p>
+      <form id="login-form">
+        <label for="email">Email administrator</label>
+        <input id="email" name="email" type="email" autocomplete="username" placeholder="nama@email.com" required />
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Masukkan password" required />
+        <button type="submit">Masuk ke dashboard <span>→</span></button>
+        <p id="login-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+    <p class="login-footer">Akses terbatas · Aktivitas autentikasi dikelola melalui Supabase</p>
+  </section>
 </Base>
 <script>
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -13,19 +27,49 @@ import Base from '../../layouts/Base.astro';
   const key = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const form = document.querySelector('#login-form');
   const status = document.querySelector('#login-status');
-  if (!url || !key) { status.textContent = 'Konfigurasi Supabase belum dipasang pada environment deployment.'; form.querySelector('button').disabled = true; }
-  else {
+  const button = form.querySelector('button');
+  if (!url || !key) {
+    status.textContent = 'Konfigurasi Supabase belum tersedia. Hubungi pengelola sistem.';
+    button.disabled = true;
+  } else {
     const supabase = createClient(url, key);
     form.addEventListener('submit', async (event) => {
-      event.preventDefault(); const button=form.querySelector('button'); button.disabled=true; status.textContent='Memeriksa akun...';
-      const {data,error}=await supabase.auth.signInWithPassword({email:form.querySelector('#email').value.trim(),password:form.querySelector('#password').value});
-      if(error){status.textContent='Login gagal. Periksa email dan password.';button.disabled=false;return;}
-      const {data:admin,error:adminError}=await supabase.from('admin_users').select('user_id').eq('user_id',data.user.id).maybeSingle();
-      if(adminError||!admin){await supabase.auth.signOut();status.textContent='Akun ini belum memiliki akses administrator.';button.disabled=false;return;}
-      window.location.href='/admin/dashboard/';
+      event.preventDefault();
+      button.disabled = true;
+      status.textContent = 'Memverifikasi akun...';
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: form.querySelector('#email').value.trim(),
+          password: form.querySelector('#password').value,
+        });
+        if (error) throw error;
+        const { data: admin, error: adminError } = await supabase
+          .from('admin_users')
+          .select('user_id')
+          .eq('user_id', data.user.id)
+          .maybeSingle();
+        if (adminError || !admin) {
+          await supabase.auth.signOut();
+          status.textContent = 'Akun berhasil dikenali, tetapi belum memiliki izin administrator.';
+          button.disabled = false;
+          return;
+        }
+        status.textContent = 'Berhasil. Membuka dashboard...';
+        window.location.assign('/admin/dashboard/');
+      } catch (error) {
+        status.textContent = 'Login gagal. Periksa email, password, atau koneksi lalu coba kembali.';
+        button.disabled = false;
+      }
     });
   }
 </script>
 <style>
-.admin-wrap{max-width:560px;margin:70px auto;padding:0 18px}.admin-card{padding:34px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 42px rgba(35,24,18,.08)}.admin-card h1{font-size:34px;margin:8px 0}.admin-card form{display:grid;gap:12px;margin-top:24px}.admin-card input{width:100%;padding:13px;border:1px solid var(--line);border-radius:8px;font:inherit}.admin-card button{padding:13px;border:0;border-radius:8px;background:var(--brand);color:white;font:inherit;font-weight:700;cursor:pointer}.admin-card button:disabled{opacity:.55}.admin-card #login-status{min-height:24px;color:var(--muted)}
+:global(.site-header),:global(.site-footer),:global(.floating-whatsapp){display:none!important}
+:global(body){background:#f3f5f7}
+:global(main.container){max-width:none!important;width:100%;padding:0!important;margin:0!important}
+.login-shell{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 18px;color:#202a34}
+.login-brand{display:flex;align-items:center;gap:11px;margin-bottom:24px}.brand-mark{width:42px;height:42px;border-radius:12px;background:#d6a66a;color:#1d2832;display:grid;place-items:center;font-weight:900}.login-brand strong,.login-brand small{display:block}.login-brand strong{font-size:14px}.login-brand small{font-size:9px;letter-spacing:1.5px;color:#84909b;margin-top:4px}
+.login-card{width:min(100%,430px);background:#fff;border:1px solid #e6eaee;border-radius:15px;padding:34px;box-shadow:0 18px 55px rgba(25,39,52,.07)}.lock-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:10px;background:#f7efe5;color:#9d7042;font-size:24px;margin-bottom:23px}.eyebrow{font-size:9px;letter-spacing:1.8px;font-weight:800;color:#ad7b48;margin:0 0 8px}.login-card h1{font-size:27px;letter-spacing:-.6px;margin:0 0 8px}.intro{font-size:12px;line-height:1.7;color:#7d8994;margin:0 0 25px}
+.login-card form{display:grid;gap:9px}.login-card label{font-size:11px;font-weight:700;color:#485461;margin-top:7px}.login-card input{width:100%;box-sizing:border-box;border:1px solid #dfe4e8;border-radius:8px;padding:12px 13px;font:inherit;font-size:12px;outline:none}.login-card input:focus{border-color:#b58a5d;box-shadow:0 0 0 3px rgba(181,138,93,.12)}.login-card button{margin-top:13px;padding:13px 15px;border:0;border-radius:8px;background:#263747;color:white;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.login-card button span{float:right}.login-card button:disabled{opacity:.55;cursor:wait}#login-status{min-height:18px;margin:5px 0 0;color:#9a6d3e;font-size:11px;line-height:1.5}.login-footer{font-size:10px;color:#98a1a9;text-align:center;margin-top:22px}
+@media(max-width:480px){.login-card{padding:26px 22px}.login-card h1{font-size:24px}}
 </style>
