@@ -46,6 +46,8 @@ jobs:
         env:
           SITE_URL: https://javatobacco.com
           BASE_PATH: /
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
