@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Admin Login | Java Mbako" description="Login administrator Java Mbako." index={false}>
+  <section class="admin-wrap"><div class="admin-card">
+    <p class="eyebrow">Area terbatas</p><h1>Admin Java Mbako</h1><p>Masuk untuk mengakses panel administrasi website.</p>
+    <form id="login-form"><label for="email">Email administrator</label><input id="email" type="email" autocomplete="username" required /><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required /><button type="submit">Masuk</button><p id="login-status" role="status" aria-live="polite"></p></form>
+  </div></section>
+</Base>
+<script>
+  import { createClient } from '@supabase/supabase-js';
+  const url = import.meta.env.PUBLIC_SUPABASE_URL;
+  const key = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const form = document.querySelector('#login-form');
+  const status = document.querySelector('#login-status');
+  if (!url || !key) { status.textContent = 'Konfigurasi Supabase belum dipasang pada environment deployment.'; form.querySelector('button').disabled = true; }
+  else {
+    const supabase = createClient(url, key);
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); const button=form.querySelector('button'); button.disabled=true; status.textContent='Memeriksa akun...';
+      const {data,error}=await supabase.auth.signInWithPassword({email:form.email.value.trim(),password:form.password.value});
+      if(error){status.textContent='Login gagal. Periksa email dan password.';button.disabled=false;return;}
+      const {data:admin,error:adminError}=await supabase.from('admin_users').select('user_id').eq('user_id',data.user.id).maybeSingle();
+      if(adminError||!admin){await supabase.auth.signOut();status.textContent='Akun ini belum memiliki akses administrator.';button.disabled=false;return;}
+      window.location.href='/admin/dashboard/';
+    });
+  }
+</script>
+<style>
+.admin-wrap{max-width:560px;margin:70px auto;padding:0 18px}.admin-card{padding:34px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 42px rgba(35,24,18,.08)}.admin-card h1{font-size:34px;margin:8px 0}.admin-card form{display:grid;gap:12px;margin-top:24px}.admin-card input{width:100%;padding:13px;border:1px solid var(--line);border-radius:8px;font:inherit}.admin-card button{padding:13px;border:0;border-radius:8px;background:var(--brand);color:white;font:inherit;font-weight:700;cursor:pointer}.admin-card button:disabled{opacity:.55}.admin-card #login-status{min-height:24px;color:var(--muted)}
+</style>
